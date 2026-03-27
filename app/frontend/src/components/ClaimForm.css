@@ -1,0 +1,199 @@
+.claim-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.claim-form h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #6b21a8;
+}
+
+.presets {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.presets-label {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.preset-btn {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #d0c8e0;
+  border-radius: 6px;
+  background: #fff;
+  color: #6b21a8;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.preset-btn:hover:not(:disabled) {
+  background: #f3e8ff;
+  border-color: #6b21a8;
+}
+
+.preset-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.claim-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.claim-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.claim-form input,
+.claim-form textarea {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.claim-form input:focus,
+.claim-form textarea:focus {
+  outline: none;
+  border-color: #6b21a8;
+  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.1);
+}
+
+.claim-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.submit-btn {
+  flex: 1;
+  padding: 0.65rem 1.25rem;
+  background: #6b21a8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #581c87;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.reset-btn {
+  padding: 0.65rem 1.25rem;
+  background: #fff;
+  color: #6b21a8;
+  border: 1px solid #6b21a8;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.reset-btn:hover {
+  background: #f3e8ff;
+}
+
+/* --- Drop zone --- */
+
+.drop-zone {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fafafa;
+}
+
+.drop-zone:hover {
+  border-color: #a78bfa;
+  background: #faf5ff;
+}
+
+.drop-zone.drag-over {
+  border-color: #6b21a8;
+  background: #f3e8ff;
+}
+
+.drop-zone.has-file {
+  border-style: solid;
+  border-color: #a78bfa;
+  background: #faf5ff;
+}
+
+.drop-zone-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.drop-zone-icon {
+  font-size: 1.4rem;
+}
+
+.drop-zone-hint {
+  font-size: 0.75rem;
+  color: #c4b5d6;
+}
+
+.drop-zone-file {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.drop-zone-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6b21a8;
+}
+
+.drop-zone-remove {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0 0.25rem;
+  line-height: 1;
+}
+
+.drop-zone-remove:hover {
+  color: #ef4444;
+}

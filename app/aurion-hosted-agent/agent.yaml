@@ -1,0 +1,28 @@
+name: aurion-claim-intake
+description: >
+  Simplified single-node claim classification agent hosted in Microsoft Foundry
+  Agent Service. Demonstrates the hosted agent deployment pattern for the
+  Aurion claim intake workflow.
+metadata:
+  authors:
+    - Aurion Hackathon Team
+  tags:
+    - Azure AI AgentServer
+    - Microsoft Agent Framework
+    - Workflows
+    - Insurance
+    - Claims
+template:
+  name: aurion-claim-intake
+  kind: hosted
+  protocols:
+    - protocol: responses
+  environment_variables:
+    - name: AZURE_AI_PROJECT_ENDPOINT
+      value: ${AZURE_AI_PROJECT_ENDPOINT}
+    - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+      value: "{{chat}}"
+resources:
+  - kind: model
+    id: gpt-4o
+    name: chat

@@ -1,0 +1,40 @@
+[project]
+name = "aurion-claim-workflow"
+version = "0.1.0"
+description = "Aurion automated insurance claim intake workflow"
+requires-python = ">=3.13"
+dependencies = [
+    "agent-framework==1.0.0rc3",
+    "azure-identity>=1.25.2",
+    "azure-ai-documentintelligence",
+    "python-dotenv>=1.2.2",
+    "pydantic>=2.0,<2.13",
+    "fpdf2",
+    "fastapi>=0.135.1",
+    "uvicorn>=0.41.0",
+    "python-multipart>=0.0.9",
+]
+
+[project.scripts]
+aurion-claim = "aurion_claim_workflow.main:cli"
+aurion-server = "server.app:start"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[tool.uv]
+prerelease = "allow"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.setuptools.packages.find]
+include = ["aurion_claim_workflow*"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"

@@ -1,0 +1,150 @@
+.step-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.step-details.empty {
+  padding: 2rem;
+  text-align: center;
+}
+
+.step-details-placeholder {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.step-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.step-card h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  color: #6b21a8;
+}
+
+.step-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+}
+
+.step-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.step-field.span-full {
+  grid-column: 1 / -1;
+}
+
+.field-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.field-value {
+  font-size: 0.85rem;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.urgency-low {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.urgency-normal {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.urgency-high {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.urgency-critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.action-auto_process {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.action-escalate {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.action-request_more_info {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.missing-fields {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* Confidence bar */
+.confidence-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.confidence-track {
+  flex: 1;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+  max-width: 100px;
+}
+
+.confidence-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.confidence-pct {
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 32px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

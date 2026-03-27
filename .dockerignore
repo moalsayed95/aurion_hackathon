@@ -1,0 +1,7 @@
+# Exclude everything by default
+*
+
+# Include only what the Dockerfile needs
+!app/hosted-agent/
+!app/backend/aurion_claim_workflow/
+!.env
