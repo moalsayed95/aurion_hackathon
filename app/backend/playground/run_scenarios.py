@@ -1,7 +1,7 @@
 """Standalone script to run claim intake scenarios from the playground.
 
 Usage (from app/backend):
-    uv run python playground/run_scenarios.py        # all 3 scenarios
+    uv run python playground/run_scenarios.py        # all 5 scenarios
     uv run python playground/run_scenarios.py 1      # single scenario
 """
 

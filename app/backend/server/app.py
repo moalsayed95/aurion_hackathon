@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from server.routes.claims import router as claims_router
 from server.routes.claims_stream import router as claims_stream_router
+from server.routes.mailbox import router as mailbox_router
 
 
 def create_app() -> FastAPI:
@@ -22,6 +23,7 @@ def create_app() -> FastAPI:
 
     app.include_router(claims_router, prefix="/api")
     app.include_router(claims_stream_router, prefix="/api")
+    app.include_router(mailbox_router, prefix="/api")
 
     @app.get("/api/workflow/diagram")
     def workflow_diagram():

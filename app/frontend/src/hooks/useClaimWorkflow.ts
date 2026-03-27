@@ -114,14 +114,77 @@ export function useClaimWorkflow() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const abortRef = useRef<AbortController | null>(null);
 
-  const submitClaim = useCallback(async (request: ClaimRequest, file?: File) => {
-    // Cancel any in-flight request
+  /** Shared SSE reader — consumes a streaming response and dispatches events. */
+  const consumeSSE = useCallback(async (resp: Response, controller: AbortController) => {
+    if (!resp.ok || !resp.body) {
+      dispatch({ type: "WORKFLOW_FAILED", error: `HTTP ${resp.status}` });
+      return;
+    }
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        const json = line.slice(6);
+        if (!json) continue;
+
+        try {
+          const evt = JSON.parse(json);
+          switch (evt.type) {
+            case "executor_invoked":
+              dispatch({ type: "EXECUTOR_INVOKED", executor_id: evt.executor_id });
+              break;
+            case "executor_completed":
+              dispatch({ type: "EXECUTOR_COMPLETED", executor_id: evt.executor_id });
+              break;
+            case "classification_result":
+              dispatch({ type: "CLASSIFICATION_RECEIVED", data: evt as ClassificationResult });
+              break;
+            case "extraction_result":
+              dispatch({ type: "EXTRACTION_RECEIVED", data: evt as ExtractionResult });
+              break;
+            case "decision_result":
+              dispatch({ type: "DECISION_RECEIVED", data: evt as DecisionResult });
+              break;
+            case "agent_streaming":
+              dispatch({ type: "AGENT_STREAMING", agent_name: evt.agent_name, text_delta: evt.text_delta });
+              break;
+            case "workflow_output":
+              dispatch({ type: "WORKFLOW_COMPLETED", data: evt });
+              break;
+            case "workflow_failed":
+              dispatch({ type: "WORKFLOW_FAILED", error: `${evt.error_type}: ${evt.message}` });
+              break;
+          }
+        } catch {
+          // skip malformed lines
+        }
+      }
+    }
+  }, []);
+
+  /** Start a new workflow run — cancel anything in-flight first. */
+  const startRun = useCallback(() => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
-
     dispatch({ type: "RESET" });
     dispatch({ type: "WORKFLOW_STARTED" });
+    return controller;
+  }, []);
+
+  const submitClaim = useCallback(async (request: ClaimRequest, file?: File) => {
+    const controller = startRun();
 
     try {
       const formData = new FormData();
@@ -141,95 +204,35 @@ export function useClaimWorkflow() {
         signal: controller.signal,
       });
 
-      if (!resp.ok || !resp.body) {
-        dispatch({ type: "WORKFLOW_FAILED", error: `HTTP ${resp.status}` });
-        return;
-      }
-
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-
-        for (const line of lines) {
-          if (!line.startsWith("data: ")) continue;
-          const json = line.slice(6);
-          if (!json) continue;
-
-          try {
-            const evt = JSON.parse(json);
-            switch (evt.type) {
-              case "executor_invoked":
-                dispatch({ type: "EXECUTOR_INVOKED", executor_id: evt.executor_id });
-                break;
-              case "executor_completed":
-                dispatch({ type: "EXECUTOR_COMPLETED", executor_id: evt.executor_id });
-                break;
-              case "classification_result":
-                dispatch({
-                  type: "CLASSIFICATION_RECEIVED",
-                  data: evt as ClassificationResult,
-                });
-                break;
-              case "extraction_result":
-                dispatch({
-                  type: "EXTRACTION_RECEIVED",
-                  data: evt as ExtractionResult,
-                });
-                break;
-              case "decision_result":
-                dispatch({
-                  type: "DECISION_RECEIVED",
-                  data: evt as DecisionResult,
-                });
-                break;
-              case "agent_streaming":
-                dispatch({
-                  type: "AGENT_STREAMING",
-                  agent_name: evt.agent_name,
-                  text_delta: evt.text_delta,
-                });
-                break;
-              case "workflow_output":
-                dispatch({ type: "WORKFLOW_COMPLETED", data: evt });
-                break;
-              case "workflow_failed":
-                dispatch({
-                  type: "WORKFLOW_FAILED",
-                  error: `${evt.error_type}: ${evt.message}`,
-                });
-                break;
-            }
-          } catch {
-            // skip malformed lines
-          }
-        }
-      }
-
-      // If stream ended without explicit completion
-      if (state.status === "running") {
-        dispatch({ type: "WORKFLOW_COMPLETED", data: {} as never });
-      }
+      await consumeSSE(resp, controller);
     } catch (err: unknown) {
       if (err instanceof DOMException && err.name === "AbortError") return;
-      dispatch({
-        type: "WORKFLOW_FAILED",
-        error: err instanceof Error ? err.message : "Unknown error",
-      });
+      dispatch({ type: "WORKFLOW_FAILED", error: err instanceof Error ? err.message : "Unknown error" });
     }
-  }, []);
+  }, [startRun, consumeSSE]);
+
+  const processLiveEmail = useCallback(async (messageId: string) => {
+    const controller = startRun();
+
+    try {
+      const resp = await fetch("http://localhost:8000/api/claims/process/live", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message_id: messageId }),
+        signal: controller.signal,
+      });
+
+      await consumeSSE(resp, controller);
+    } catch (err: unknown) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      dispatch({ type: "WORKFLOW_FAILED", error: err instanceof Error ? err.message : "Unknown error" });
+    }
+  }, [startRun, consumeSSE]);
 
   const reset = useCallback(() => {
     abortRef.current?.abort();
     dispatch({ type: "RESET" });
   }, []);
 
-  return { state, submitClaim, reset };
+  return { state, submitClaim, processLiveEmail, reset };
 }

@@ -90,3 +90,22 @@ export interface ScenarioPreset {
   description: string;
   data: ClaimRequest;
 }
+
+// --- Live Mailbox ---
+
+export type AppMode = "sample" | "live";
+
+export interface MailboxEmail {
+  id: string;
+  subject: string;
+  sender: string;
+  sender_name: string;
+  received: string;
+  has_attachments: boolean;
+  preview: string;
+}
+
+export interface MailboxStatus {
+  configured: boolean;
+  mailbox: string | null;
+}

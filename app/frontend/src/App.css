@@ -107,6 +107,34 @@
   font-size: 0.85rem;
 }
 
+/* Mode toggle */
+.mode-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.toggle-btn {
+  padding: 0.35rem 0.9rem;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.toggle-btn:hover {
+  color: #fff;
+}
+
+.toggle-btn.active {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
 @keyframes pulse-subtle {
   0%,
   100% {
