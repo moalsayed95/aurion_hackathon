@@ -1,0 +1,120 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.41.2.15936",
+      "templateHash": "18253980961687930808"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location for all resources"
+      }
+    },
+    "baseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Base name used to derive resource names"
+      }
+    },
+    "gptDeploymentName": {
+      "type": "string",
+      "metadata": {
+        "description": "GPT model deployment name"
+      }
+    },
+    "gptModelName": {
+      "type": "string",
+      "metadata": {
+        "description": "GPT model name"
+      }
+    }
+  },
+  "variables": {
+    "uniqueSuffix": "[uniqueString(resourceGroup().id)]",
+    "aiServicesName": "[format('ais-{0}-{1}', parameters('baseName'), take(variables('uniqueSuffix'), 8))]",
+    "docIntelligenceName": "[format('di-{0}-{1}', parameters('baseName'), take(variables('uniqueSuffix'), 8))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2024-10-01",
+      "name": "[variables('aiServicesName')]",
+      "location": "[parameters('location')]",
+      "kind": "AIServices",
+      "sku": {
+        "name": "S0"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "customSubDomainName": "[variables('aiServicesName')]",
+        "publicNetworkAccess": "Enabled"
+      },
+      "tags": {
+        "project": "aurion-hackathon"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2024-10-01",
+      "name": "[format('{0}/{1}', variables('aiServicesName'), parameters('gptDeploymentName'))]",
+      "sku": {
+        "name": "GlobalStandard",
+        "capacity": 10
+      },
+      "properties": {
+        "model": {
+          "format": "OpenAI",
+          "name": "[parameters('gptModelName')]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', variables('aiServicesName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2024-10-01",
+      "name": "[variables('docIntelligenceName')]",
+      "location": "[parameters('location')]",
+      "kind": "FormRecognizer",
+      "sku": {
+        "name": "S0"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "customSubDomainName": "[variables('docIntelligenceName')]",
+        "publicNetworkAccess": "Enabled"
+      },
+      "tags": {
+        "project": "aurion-hackathon"
+      }
+    }
+  ],
+  "outputs": {
+    "aiServicesEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', variables('aiServicesName')), '2024-10-01').endpoint]"
+    },
+    "documentIntelligenceEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', variables('docIntelligenceName')), '2024-10-01').endpoint]"
+    },
+    "aiServicesName": {
+      "type": "string",
+      "value": "[variables('aiServicesName')]"
+    },
+    "docIntelligenceName": {
+      "type": "string",
+      "value": "[variables('docIntelligenceName')]"
+    }
+  }
+}

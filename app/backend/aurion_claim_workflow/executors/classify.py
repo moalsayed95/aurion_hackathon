@@ -20,25 +20,26 @@ class ClassificationExecutor(Executor):
     async def run(self, doc: ProcessedDocument, ctx: WorkflowContext[ClassifiedEmail]) -> None:
         logger.info("Classifying document via LLM...")
 
-        tables_text = "\n\n".join(doc.pdf_tables) if doc.pdf_tables else "(keine Tabellen)"
+        tables_text = "\n\n".join(doc.pdf_tables) if doc.pdf_tables else "(no tables)"
         prompt = (
-            f"Analysiere die folgende Versicherungs-E-Mail und das beigefügte Dokument.\n\n"
-            f"--- E-Mail ---\n"
-            f"Von: {doc.sender}\n"
-            f"Betreff: {doc.subject}\n"
-            f"Inhalt:\n{doc.body}\n\n"
-            f"--- Beigefügtes Dokument (extrahierter Text) ---\n"
+            f"Analyze the following insurance email and attached document.\n\n"
+            f"--- Email ---\n"
+            f"From: {doc.sender}\n"
+            f"Subject: {doc.subject}\n"
+            f"Body:\n{doc.body}\n\n"
+            f"--- Attached document (extracted text) ---\n"
             f"{doc.pdf_text}\n\n"
-            f"--- Tabellen aus dem Dokument ---\n"
+            f"--- Tables from the document ---\n"
             f"{tables_text}\n\n"
-            f"Klassifiziere diese E-Mail. Antworte ausschließlich im JSON-Format."
+            f"Classify this email. Respond exclusively in JSON format."
         )
 
         messages = [
             Message("system", text=(
-                "Du bist ein Experte für die Klassifikation von Versicherungsdokumenten bei Aurion. "
-                "Analysiere die E-Mail und das beigefügte Dokument und klassifiziere sie. "
-                "Antworte ausschließlich im JSON-Format mit den Feldern: "
+                "You are an expert insurance document classifier at Aurion. "
+                "Analyze the email and attached document and classify them. "
+                "The email and document may be in any language — classify regardless of language. "
+                "Respond exclusively in JSON format with the fields: "
                 "document_type (new_claim|claim_status|policy_inquiry|invoice|complaint|general), "
                 "urgency (low|normal|high|critical), confidence (0.0-1.0), reasoning (string)."
             )),

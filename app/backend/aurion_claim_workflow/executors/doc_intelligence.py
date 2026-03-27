@@ -10,6 +10,18 @@ async def doc_intelligence(email: EmailInput, ctx: WorkflowContext[ProcessedDocu
     pdf_text = ""
     pdf_tables: list[str] = []
 
+    if not email.pdf_path:
+        # No PDF attached — skip Document Intelligence, pass through email text only
+        doc = ProcessedDocument(
+            sender=email.sender,
+            subject=email.subject,
+            body=email.body,
+            pdf_text="(kein Dokument beigefuegt)",
+            pdf_tables=[],
+        )
+        await ctx.send_message(doc)
+        return
+
     try:
         from azure.ai.documentintelligence.aio import DocumentIntelligenceClient
         from azure.identity import DefaultAzureCredential

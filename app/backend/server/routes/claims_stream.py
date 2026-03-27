@@ -120,24 +120,26 @@ async def process_claim_stream(
     sender: str = Form(""),
     subject: str = Form(""),
     body: str = Form(""),
+    pdf_path: str = Form(""),
     pdf_file: UploadFile | None = File(None),
 ):
-    # Resolve PDF path: uploaded file → temp dir, else fallback sample
+    # Resolve PDF: uploaded file takes priority, then pdf_path from preset, else no PDF
     tmp_path: Path | None = None
+    resolved_pdf: str | None = None
     if pdf_file and pdf_file.filename:
         tmp_dir = Path(tempfile.mkdtemp(prefix="aurion_"))
         tmp_path = tmp_dir / pdf_file.filename
         with tmp_path.open("wb") as f:
             shutil.copyfileobj(pdf_file.file, f)
-        pdf_path = str(tmp_path)
-    else:
-        pdf_path = "playground/sample_data/kostenvoranschlag.pdf"
+        resolved_pdf = str(tmp_path)
+    elif pdf_path:
+        resolved_pdf = pdf_path
 
     email_input = EmailInput(
         sender=sender,
         subject=subject,
         body=body,
-        pdf_path=pdf_path,
+        pdf_path=resolved_pdf,
     )
 
     async def stream_and_cleanup():

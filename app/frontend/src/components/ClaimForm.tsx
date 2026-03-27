@@ -10,6 +10,7 @@ const PRESETS: ScenarioPreset[] = [
     data: {
       sender: "maria.huber@gmail.com",
       subject: "Schadensmeldung - Wasserschaden Polizze Nr. WH-2024-881234",
+      pdf_path: "playground/sample_data/kostenvoranschlag_wasserschaden.pdf",
       body: `Sehr geehrte Damen und Herren,
 
 hiermit melde ich einen Wasserschaden in meiner versicherten Wohnung.
@@ -35,6 +36,7 @@ Tel: +43 664 1234567`,
     data: {
       sender: "thomas.wagner@aon.at",
       subject: "DRINGEND - Brandschaden Gewerbeobjekt - Polizze GW-2023-445566",
+      pdf_path: "playground/sample_data/kostenvoranschlag_brandschaden.pdf",
       body: `Sehr geehrte Damen und Herren,
 
 ich muss leider einen schweren Brandschaden an meinem Gewerbeobjekt melden.
@@ -71,6 +73,49 @@ Können Sie mir bitte sagen was ich tun muss?
 
 Danke,
 Anna Berger`,
+    },
+  },
+  {
+    id: "4",
+    label: "James Carter",
+    description: "Water Damage (EN) — Auto-Process",
+    data: {
+      sender: "james.carter@outlook.com",
+      subject: "Claim Report - Water Damage Policy No. WH-2025-990012",
+      pdf_path: "playground/sample_data/kostenvoranschlag_wasserschaden_en.pdf",
+      body: `Dear Sir or Madam,
+
+I would like to report water damage in my insured apartment.
+
+Policy number: WH-2025-990012
+Name: James Carter
+Date of incident: 20 March 2026
+Location: Ringstrasse 8, 1010 Vienna
+
+On 20 March 2026, a pipe burst in the bathroom causing significant water damage to the floor and walls. I immediately shut off the main water supply and contacted a plumber.
+
+The estimated repair cost is EUR 2,800.00. Please find the cost estimate attached.
+
+Kind regards,
+James Carter
+Tel: +43 699 1112233`,
+    },
+  },
+  {
+    id: "5",
+    label: "Sophie Martinez",
+    description: "Car Damage (EN) — Request Info",
+    data: {
+      sender: "sophie.martinez@gmail.com",
+      subject: "Car damage",
+      body: `Hello,
+
+Someone hit my parked car last week while I was at work. I noticed the damage on the driver side door when I came back. I'm not sure exactly when it happened.
+
+Could you please let me know what steps I need to take?
+
+Thanks,
+Sophie Martinez`,
     },
   },
 ];

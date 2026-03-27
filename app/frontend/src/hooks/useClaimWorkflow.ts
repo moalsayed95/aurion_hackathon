@@ -128,6 +128,9 @@ export function useClaimWorkflow() {
       formData.append("sender", request.sender);
       formData.append("subject", request.subject);
       formData.append("body", request.body);
+      if (request.pdf_path) {
+        formData.append("pdf_path", request.pdf_path);
+      }
       if (file) {
         formData.append("pdf_file", file);
       }

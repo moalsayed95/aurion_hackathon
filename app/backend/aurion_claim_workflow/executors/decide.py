@@ -23,29 +23,29 @@ class DecisionExecutor(Executor):
         data = extracted.extracted_data
         classification = extracted.classification
         prompt = (
-            f"Entscheide über die Weiterleitung dieses Versicherungsfalls basierend auf folgenden Daten:\n\n"
-            f"Klassifikation: {classification.document_type} (Dringlichkeit: {classification.urgency}, "
-            f"Konfidenz: {classification.confidence})\n\n"
-            f"Extrahierte Daten:\n"
-            f"- Polizzennummer: {data.policy_number or 'FEHLT'}\n"
-            f"- Kunde: {data.customer_name or 'FEHLT'}\n"
-            f"- Schadensdatum: {data.incident_date or 'FEHLT'}\n"
-            f"- Schadenshöhe: {data.claim_amount or 'FEHLT'}\n"
-            f"- Schadensart: {data.damage_type or 'FEHLT'}\n"
-            f"- Fehlende Felder: {', '.join(data.missing_fields) if data.missing_fields else 'keine'}\n"
-            f"- Datenqualität: {data.data_quality_score}\n\n"
-            f"Geschäftsregeln:\n"
-            f"- auto_process: Alle Pflichtfelder vorhanden, Betrag < 5.000 EUR, normale Dringlichkeit\n"
-            f"- escalate: Betrag > 10.000 EUR, kritische Dringlichkeit, Beschwerde, oder niedrige Konfidenz (<0.7)\n"
-            f"- request_more_info: Fehlende Pflichtfelder oder niedrige Datenqualität (<0.6)\n\n"
-            f"Antworte ausschließlich im JSON-Format."
+            f"Decide the routing for this insurance case based on the following data:\n\n"
+            f"Classification: {classification.document_type} (urgency: {classification.urgency}, "
+            f"confidence: {classification.confidence})\n\n"
+            f"Extracted data:\n"
+            f"- Policy number: {data.policy_number or 'MISSING'}\n"
+            f"- Customer: {data.customer_name or 'MISSING'}\n"
+            f"- Incident date: {data.incident_date or 'MISSING'}\n"
+            f"- Claim amount: {data.claim_amount or 'MISSING'}\n"
+            f"- Damage type: {data.damage_type or 'MISSING'}\n"
+            f"- Missing fields: {', '.join(data.missing_fields) if data.missing_fields else 'none'}\n"
+            f"- Data quality: {data.data_quality_score}\n\n"
+            f"Business rules:\n"
+            f"- auto_process: All required fields present, amount < 5,000 EUR, normal urgency\n"
+            f"- escalate: Amount > 10,000 EUR, critical urgency, complaint, or low confidence (<0.7)\n"
+            f"- request_more_info: Missing required fields or low data quality (<0.6)\n\n"
+            f"Respond exclusively in JSON format."
         )
 
         messages = [
             Message("system", text=(
-                "Du bist ein Entscheidungsassistent für Versicherungsschadensfälle bei Aurion. "
-                "Wende die Geschäftsregeln an und entscheide über die Weiterleitung. "
-                "Antworte ausschließlich im JSON-Format mit den Feldern: "
+                "You are a decision assistant for insurance claims at Aurion. "
+                "Apply the business rules and decide the routing. "
+                "Respond exclusively in JSON format with the fields: "
                 "action (auto_process|escalate|request_more_info), reasoning (string), "
                 "priority (low|normal|high|critical)."
             )),

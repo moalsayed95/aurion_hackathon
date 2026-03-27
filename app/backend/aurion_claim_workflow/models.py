@@ -11,7 +11,7 @@ class EmailInput:
     sender: str
     subject: str
     body: str
-    pdf_path: str
+    pdf_path: str | None = None
 
 
 # --- Doc Intelligence output ---

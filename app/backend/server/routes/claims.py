@@ -11,7 +11,7 @@ class ClaimRequest(BaseModel):
     sender: str
     subject: str
     body: str
-    pdf_path: str = "playground/sample_data/kostenvoranschlag.pdf"
+    pdf_path: str | None = None
 
 
 class ClaimResponse(BaseModel):
